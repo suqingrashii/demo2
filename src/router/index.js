@@ -18,6 +18,8 @@ import Orderfinish from "../views/Orderfinish";
 import updateUser from "../views/updateUser";
 import updateByUserId from "../views/updateByUserId";
 import updateByAdminId from "../views/updateByAdminId";
+import Usermanage from "../views/Usermanage";
+import UserAdd from "../views/UserAdd";
 
 Vue.use(VueRouter)
 
@@ -57,6 +59,27 @@ const routes = [
         path: '/Orderfinish',
         name:'已完成订单',
         component: Orderfinish
+      }
+    ]
+  },{
+    path: '/index',
+    name: '用户管理',
+    component: index,
+    redirect:"/Usermanage",
+    children:[
+      {
+        path: '/Usermanage',
+        name:'查询用户',
+        component: Usermanage
+      },
+      {
+        path: '/UserAdd',
+        name:'添加用户',
+        component: UserAdd
+      },
+      {
+        path: '/updateUser',
+        component: updateUser
       }
     ]
   },{

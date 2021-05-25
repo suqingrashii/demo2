@@ -20,6 +20,13 @@
                         <i class="el-icon-set-up"></i>{{item2_1.name}}
                     </el-menu-item>
                 </el-submenu>
+                <el-submenu v-for="(item3,index3) in $router.options.routes"
+                            v-if="item3.name!=null&&item3.name==='用户管理'" :index="index3+''">
+                  <template slot="title"><i class="el-icon-s-user"></i>{{item3.name}}</template>
+                  <el-menu-item v-for="(item3_1) in item3.children" v-if="item3.name!=null" :index="item3_1.path">
+                    <i class="el-icon-set-up"></i>{{item3_1.name}}
+                  </el-menu-item>
+                </el-submenu>
             </el-menu>
 
         </el-aside>
