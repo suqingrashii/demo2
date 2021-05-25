@@ -1,142 +1,164 @@
 <template>
-    <!--  Form 组件提供了表单验证的功能，只需要通过 rules 属性传入约定的验证规则，  -->
-    <!--  并将 Form-Item 的 prop 属性设置为需校验的字段名即可。  -->
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" style="width: 30%" label-width="100px" class="demo-ruleForm">
+  <!--flex弹性盒子模型，justify-content：主抽 -->
+  <div style="display: flex;justify-content: center">
+    <el-card  style="width: 450px">
+      <div slot="header" class="clearfix">
+        <span>添加用户:</span>
+      </div>
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" style="width: 80%;" label-width="100px" class="demo-ruleForm">
 
-        <el-form-item label="菜品名称" prop="name">
-            <el-input placeholder="请输入菜品名称" v-model="ruleForm.name"></el-input>
+        <el-form-item label="账户" prop="username">
+          <el-input placeholder="请输入账户" v-model="ruleForm.username"></el-input>
         </el-form-item>
 
-        <el-form-item label="菜品价格" prop="price">
-            <el-input placeholder="请输入菜品价格" v-model.number="ruleForm.price"></el-input>
+        <el-form-item label="密码" prop="password">
+          <el-input placeholder="请输入密码" type="password" v-model="ruleForm.password" autocomplete="off" show-password></el-input>
         </el-form-item>
-
-        <el-form-item label="菜品口味" prop="flavor">
-            <el-input placeholder="请输入菜品口味" v-model="ruleForm.flavor"></el-input>
+        <el-form-item label="确认密码" prop="checkPassword">
+          <el-input placeholder="请再次输入密码" type="password" v-model="ruleForm.checkPassword" autocomplete="off" show-password></el-input>
         </el-form-item>
-        <el-form-item label="种类">
-            <el-radio-group v-model="ruleForm.type.id" size="small">
-                <el-radio :label="1">热菜</el-radio>
-                <el-radio :label="2">凉菜</el-radio>
-                <el-radio :label="3">汤羹</el-radio>
-                <el-radio :label="4">主食</el-radio>
-                <el-radio :label="5">烘焙</el-radio>
-            </el-radio-group>
+        <el-form-item label="姓名" prop="nickname">
+          <el-input placeholder="请输入姓名" v-model="ruleForm.nickname"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" prop="telephone">
+          <el-input placeholder="请输入电话" v-model="ruleForm.telephone"></el-input>
+        </el-form-item>
+        <el-form-item label="性别">
+          <el-radio-group v-model="ruleForm.gender" size="small">
+            <el-radio :label="1">男</el-radio>
+            <el-radio :label="2">女</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="地址" prop="address">
+          <el-input placeholder="请输入地址" v-model="ruleForm.address"></el-input>
         </el-form-item>
         <el-form-item>
-            <el-button type="success " @click="submitForm('ruleForm')" icon="el-icon-document-add">添加</el-button>
-            <el-button type="warning" @click="resetForm('ruleForm')" icon="el-icon-delete-solid">重置</el-button>
+          <el-button type="success " @click="toregister('ruleForm')" icon="el-icon-success" plain>注册</el-button>
+          <el-button type="warning" @click="resetForm('ruleForm')" icon="el-icon-info" plain style="float: right;">重置</el-button>
         </el-form-item>
-    </el-form>
+      </el-form>
+    </el-card>
+  </div>
 </template>
 <script>
-    export default {
-        data() {
-            return {
-                ruleForm: {
-                    name: '',
-                    price: '',
-                    flavor:'',
-                    type:{
-                        id:1,
-                        name:'',
-                    }
-                },
-                rules: {
-                    name: [
-                        // required 属性，表示为必填项，参数为boolean类型
-                        // message 属性，表示当前规则不满足时则提示该文字，参数为String类型
-                        // trigger 属性，表示什么事件触发校验，'blur' 表示当前输入框失去鼠标焦点时触发，参数为特定字符串
-                        { required: true, message: '请输入菜品名称', trigger: 'blur' },
-                        { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
-                    ],
-                    price: [
-                        { required: true, message: '请输入菜品价格', trigger: 'blur' },
-                        { type: 'number', message: '价格必须为数字值', trigger: 'blur'}
-                    ],
-                    flavor: [
-                        { required: true, message: '请输入菜品口味', trigger: 'blur' },
-                        { min: 2, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
-                    ],
-                }
-            };
-        },
-        methods: {
-            //  确认添加按钮提示函数
-            submitForm(formName) {
-                const _this=this
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        // 此处弹出提示框提示用户是否确认添加
-                        this.$confirm('请确定是否添加菜品《'+_this.ruleForm.name+'》', '提示', {
-                            confirmButtonText: '确定',
-                            cancelButtonText: '取消',
-                            type: 'warning'
-                        }).then(() => {
-                            _this.$options.methods.sendData(_this,formName);
-                        }).catch(() => {
-                            this.$message({
-                                type: 'info',
-                                message: '已取消提交'
-                            });
-                        });
-                    }
-                })
-            },
-            //  添加数据函数
-            sendData(_this,formName){
-                axios.post('http://localhost:8030/client/Menuclient/save', _this.ruleForm)
-                    .then(function (res) {
-                        if(res.data){
-                            //  添加成功后消息提示框
-                            _this.$message({
-                                showClose: true,
-                                center: true,
-                                type: 'success',
-                                message: '菜品《'+_this.ruleForm.name+'》:添加成功',
-                            });
-                            //  如果提交成功则重置输入框,也可通过以下设置跳转到对应路由
-                            //  _this.$router.push('/Menumanage')
-                            _this.$refs[formName].resetFields();
-                        }else{
-                            _this.$alert( '菜品《'+_this.ruleForm.name+'》添加失败,详情信息请联系技术人员!', 'error:', {
-                                confirmButtonText: '确定',
-                                callback: action => {
-                                    _this.$message({
-                                        center: true,
-                                        type: 'error',
-                                        message: '菜品《'+_this.ruleForm.name+'》:添加失败',
-                                    });
-                                }
-                            });
-                        }
-                    });
-            },
-            //  重置按钮函数
-            resetForm(formName) {
-                const _this=this
-                //  危险按钮再次确认功能
-                this.$confirm('此操作将重置输入框内容, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    _this.$refs[formName].resetFields();
-                    this.$message({
-                        showClose: true,
-                        center: true,
-                        type: 'success',
-                        message: '重置成功!',
-                    });
-                }).catch(() => {
-                    this.$message({
-                        showClose: true,
-                        center: true,
-                        type: 'info',
-                        message: '已取消重置'
-                    });
-                });
-            }
+export default {
+  data() {
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'));
+      } else {
+        if (this.ruleForm.checkPassword !== '') {
+          this.$refs.ruleForm.validateField('checkPassword');
         }
+        callback();
+      }
+    };
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'));
+      } else if (value !== this.ruleForm.password) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
+    return {
+      ruleForm: {
+        username: '',
+        password: '',
+        checkPassword: '',
+        nickname: '',
+        gender: 1,
+        telephone: '',
+        registerdate: Date.now(),
+        address: '',
+      },
+      rules: {
+        username: [
+          {required: true, message: '请输入账户名', trigger: 'blur'},
+          {min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
+        ],
+        password: [
+          { validator: validatePass, trigger: 'blur' },
+          {min: 6, max: 12, message: '长度在 6 到 12 位', trigger: 'blur'}
+        ],
+        checkPassword: [
+          { validator: validatePass2, trigger: 'blur' }
+        ],nickname: [
+          {required: true, message: '请输入姓名', trigger: 'blur'},
+          {min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur'}
+        ],telephone: [
+          {required: true, message: '请输入电话号码', trigger: 'blur'},
+          {min: 11, max: 11, message: '长度为  11 个字符', trigger: 'blur'}
+        ],address: [
+          {required: true, message: '请输入地址', trigger: 'blur'},
+          {min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur'}
+        ],
+      }
+    };
+  },
+  methods:{
+    toregister(ruleForm){
+      const _this=this;
+      if(_this.ruleForm.gender==1){
+        _this.ruleForm.gender='男';
+      }else {
+        _this.ruleForm.gender='女';
+      }
+      this.$refs[ruleForm].validate((valid) => {
+        if (valid) {
+          axios.post('http://localhost:8030/client/Userclient/save',_this.ruleForm)
+              .then(function (res) {
+                if(res.data){
+                  //  添加成功后消息提示框
+                  _this.$message({
+                    showClose: true,
+                    center: true,
+                    type: 'success',
+                    message: '账户《'+_this.ruleForm.username+'》:添加成功！',
+                  });
+                  _this.$router.push('/');
+                }else{
+                  _this.$alert('添加失败，账号名重复', 'error:', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                      _this.$message({
+                        center: true,
+                        type: 'error',
+                        message: '添加失败',
+                      });
+                    }
+                  });
+                }
+              });
+        }
+      })
+    },
+    //  重置按钮函数
+    resetForm(formName) {
+      const _this=this
+      //  危险按钮再次确认功能
+      this.$confirm('此操作将重置输入框内容, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        _this.$refs[formName].resetFields();
+        this.$message({
+          showClose: true,
+          center: true,
+          type: 'success',
+          message: '重置成功!',
+        });
+      }).catch(() => {
+        this.$message({
+          showClose: true,
+          center: true,
+          type: 'info',
+          message: '已取消重置'
+        });
+      });
     }
+  }
+}
 </script>

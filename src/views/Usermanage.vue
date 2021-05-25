@@ -8,27 +8,42 @@
                     fixed
                     prop="id"
                     label="编号"
+                    width="50">
+            </el-table-column>
+            <el-table-column
+                    prop="username"
+                    label="用户名"
+                    width="100">
+            </el-table-column>
+            <el-table-column
+                    prop="password"
+                    label="密码"
                     width="150">
             </el-table-column>
             <el-table-column
-                    prop="name"
-                    label="菜品"
-                    width="250">
+                    prop="nickname"
+                    label="昵称"
+                    width="100">
             </el-table-column>
             <el-table-column
-                    prop="price"
-                    label="价格(元)"
-                    width="200">
+                    prop="gender"
+                    label="性别"
+                    width="50">
             </el-table-column>
             <el-table-column
-                    prop="flavor"
-                    label="口味"
-                    width="150">
+                prop="telephone"
+                label="电话号码"
+                width="150">
             </el-table-column>
             <el-table-column
-                    prop="type.name"
-                    label="种类"
-                    width="150">
+                prop="registerdate"
+                label="注册日期"
+                width="150">
+            </el-table-column>
+            <el-table-column
+                prop="address"
+                label="用户地址"
+                width="300">
             </el-table-column>
             <el-table-column
                     fixed="right"
@@ -59,12 +74,12 @@
             //  切换其他页数函数
             page(currentPage){
                 const _this=this
-                axios.get('http://localhost:8030/client/Menuclient/findAll/'+currentPage+'/5')
+                axios.get('http://localhost:8030/client/Userclient/findAll/'+currentPage+'/8')
                     .then(function (resp){
                         console.log(resp);
                         _this.tableData=resp.data;
                     })
-                    axios.get('http://localhost:8030/client/Menuclient/count')
+                    axios.get('http://localhost:8030/client/Userclient/count')
                     .then(function (resp){
                         console.log(resp);
                         _this.total=resp.data;
@@ -80,7 +95,7 @@
                     type: 'warning'
                 }).then(() => {
                     _this.$router.push({
-                        path: '/MenuUpdate',
+                        path: '/UserUpdate',
                         query: { id: row.id },
                     })
                 }).catch(() => {
@@ -94,79 +109,79 @@
             },
             // 删除提示弹框函数
             deleteBook(row){
-                const _this=this
-                //  危险按钮再次确认功能
-                this.$confirm('将删除菜品《'+row.name+'》，请确认是否继续', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    this.$options.methods.deleteById(_this,row);
-                }).catch(() => {
-                    this.$message({
-                        showClose: true,
-                        center: true,
-                        type: 'info',
-                        message: '已取消删除操作！'
-                    });
+              const _this=this
+              //  危险按钮再次确认功能
+              this.$confirm('将删除账户《'+row.nickname+'》，请确认是否继续', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                this.$options.methods.deleteById(_this,row);
+              }).catch(() => {
+                this.$message({
+                  showClose: true,
+                  center: true,
+                  type: 'info',
+                  message: '已取消删除操作！'
                 });
+              });
             },
             // 删除数据函数
             // 此处后台deleteById无返回值，则不判断后台返回数据
             deleteById(_this,row){
-                axios.delete('http://localhost:8030/client/Menuclient/deleteById',{
-                    params:{
-                        id:row.id
-                    }
-                })
-                    .then(function (res) {
-                        console.log(res)
-                        if(res.data){
-                            _this.$message({
-                                showClose: true,
-                                center: true,
-                                type: 'success',
-                                message: '菜品《'+row.name+'》:删除成功',
-                            });
-                            //  如果删除成功则重新加载页面
-                            setTimeout("window.location.reload()",1000);
-                        }else {
-                            _this.$alert( '菜品《'+row.name+'》删除失败,详情信息请联系技术人员!', 'error:', {
-                                confirmButtonText: '确定',
-                                callback: action => {
-                                    _this.$message({
-                                        center: true,
-                                        type: 'error',
-                                        message: '菜品《'+row.name+'》:添加失败',
-                                    });
-                                }
-                            });
+              axios.delete('http://localhost:8030/client/Userclient/deleteById',{
+                params:{
+                  id:row.id
+                }
+              })
+                  .then(function (res) {
+                    console.log(res)
+                    if(res.data){
+                      _this.$message({
+                        showClose: true,
+                        center: true,
+                        type: 'success',
+                        message: '账户《'+row.nickname+'》:删除成功',
+                      });
+                      //  如果删除成功则重新加载页面
+                      setTimeout("window.location.reload()",1000);
+                    }else {
+                      _this.$alert( '账户《'+row.nickname+'》删除失败,详情信息请联系技术人员!', 'error:', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                          _this.$message({
+                            center: true,
+                            type: 'error',
+                            message: '账户《'+row.nickname+'》:添加失败',
+                          });
                         }
-                    });
+                      });
+                    }
+                  });
             },
-        },
-         // 初始化页面函数
-         // created()函数会在页面加载完后自动调用一次,一般用于初始化页面获取数据
+          },
+        // 初始化页面函数
+        // created()函数会在页面加载完后自动调用一次,一般用于初始化页面获取数据
         created() {
-            const _this=this
-            axios.get('http://localhost:8030/client/Menuclient/findAll/1/5')
-                .then(function (resp){
-                     console.log(resp);
-                    //  后端使用Page<>类型返回的，所有从响应对象的.data.content对象中取得数据
-                    _this.tableData=resp.data;
-                })
-            axios.get('http://localhost:8030/client/Menuclient/count')
-                .then(function (resp){
-                    console.log(resp);
-                    // 通过data.totalElements获得数据库表中的总条数，并传给视图层使用
-                    _this.total=resp.data;
-                })
+          const _this=this
+          axios.get('http://localhost:8030/client/Userclient/findAll/1/8')
+              .then(function (resp){
+                console.log(resp);
+                //  后端使用Page<>类型返回的，所有从响应对象的.data.content对象中取得数据
+                _this.tableData=resp.data;
+              })
+          axios.get('http://localhost:8030/client/Userclient/count')
+              .then(function (resp){
+                console.log(resp);
+                // 通过data.totalElements获得数据库表中的总条数，并传给视图层使用
+                _this.total=resp.data;
+              })
         },
         data() {
-            return {
-                total: null,
-                tableData: null,
-            }
+          return {
+            total: null,
+            tableData: null,
+          }
         }
-    }
+      }
 </script>

@@ -19,6 +19,7 @@ import updateUser from "../views/updateUser";
 import updateByUserId from "../views/updateByUserId";
 import updateByAdminId from "../views/updateByAdminId";
 import Usermanage from "../views/Usermanage";
+import UserUpdate from "../views/UserUpdate";
 import UserAdd from "../views/UserAdd";
 
 Vue.use(VueRouter)
@@ -78,8 +79,8 @@ const routes = [
         component: UserAdd
       },
       {
-        path: '/updateUser',
-        component: updateUser
+        path: '/UserUpdate',
+        component: UserUpdate
       }
     ]
   },{
